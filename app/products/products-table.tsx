@@ -4,9 +4,14 @@ import { useState, useEffect, useMemo } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, ZoomIn, ZoomOut, Download, RefreshCcw, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+    Eye, ZoomIn, ZoomOut, Download, RefreshCcw, Search,
+    ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Filter
+} from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface Product {
     id: string;
@@ -22,8 +27,6 @@ interface ProductsTableProps {
     products: Product[];
 }
 
-const ITEMS_PER_PAGE = 5;
-
 export function ProductsTable({ products }: ProductsTableProps) {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [isInternalOpen, setIsInternalOpen] = useState(false);
@@ -32,16 +35,17 @@ export function ProductsTable({ products }: ProductsTableProps) {
     // Filter & Pagination State
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
     // Reset zoom when product changes or modal opens
     useEffect(() => {
         setZoom(1);
     }, [selectedProduct, isInternalOpen]);
 
-    // Reset page when search changes
+    // Reset page when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery]);
+    }, [searchQuery, itemsPerPage]);
 
     // Filtering Logic
     const filteredProducts = useMemo(() => {
@@ -54,9 +58,9 @@ export function ProductsTable({ products }: ProductsTableProps) {
     }, [products, searchQuery]);
 
     // Pagination Logic
-    const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const paginatedProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
 
     const handleView = (product: Product) => {
         setSelectedProduct(product);
@@ -78,91 +82,140 @@ export function ProductsTable({ products }: ProductsTableProps) {
     };
 
     return (
-        <div className="space-y-4">
-            {/* Search Filter */}
-            <div className="flex items-center gap-2 max-w-sm">
-                <Search className="w-4 h-4 text-muted-foreground" />
-                <Input
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-9"
-                />
-            </div>
-
-            <div className="border rounded-md">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-[80px]">Sr. No.</TableHead>
-                            <TableHead>Product Name</TableHead>
-                            <TableHead className="hidden md:table-cell">Description</TableHead>
-                            <TableHead className="text-right">Action</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {paginatedProducts.map((product, index) => (
-                            <TableRow key={product.id}>
-                                <TableCell className="font-medium">{startIndex + index + 1}</TableCell>
-                                <TableCell>
-                                    <div className="flex flex-col">
-                                        <span className="font-medium">{product.name}</span>
-                                        <span className="text-xs text-muted-foreground md:hidden truncate max-w-[150px]">
-                                            {product.description}
-                                        </span>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell max-w-sm truncate" title={product.description}>
-                                    {product.description}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <Button variant="outline" size="sm" onClick={() => handleView(product)}>
-                                        <Eye className="w-4 h-4 mr-2" /> View
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        {paginatedProducts.length === 0 && (
-                            <TableRow>
-                                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                                    {searchQuery ? "No matching products found." : "No products available."}
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-                <div className="flex items-center justify-end space-x-2 py-2">
-                    <div className="flex-1 text-sm text-muted-foreground">
-                        Page {currentPage} of {totalPages}
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <Card className="shadow-lg border-muted/40">
+                <CardHeader className="bg-muted/10 pb-4 border-b">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <CardTitle className="text-xl">Product Catalog</CardTitle>
+                            <CardDescription>Browse and manage products list</CardDescription>
+                        </div>
+                        <div className="flex items-center gap-2 w-full md:w-auto">
+                            <div className="relative w-full md:w-72">
+                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="Search by name, type..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="pl-9"
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <div className="space-x-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
+                </CardHeader>
+                <CardContent className="p-0">
+                    <Table>
+                        <TableHeader className="bg-muted/50">
+                            <TableRow>
+                                <TableHead className="w-[80px] font-bold text-center">#</TableHead>
+                                <TableHead className="font-bold">Product Information</TableHead>
+                                <TableHead className="hidden lg:table-cell font-bold">Category</TableHead>
+                                <TableHead className="font-bold text-right pr-6">Action</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {paginatedProducts.map((product, index) => (
+                                <TableRow key={product.id} className="group hover:bg-muted/20 transition-colors">
+                                    <TableCell className="text-center font-medium">{startIndex + index + 1}</TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col gap-1">
+                                            <span className="font-semibold text-primary">{product.name}</span>
+                                            <span className="text-sm text-muted-foreground line-clamp-1">{product.description}</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="hidden lg:table-cell">
+                                        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                                            {product.type}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell className="text-right pr-4">
+                                        <Button
+                                            size="sm"
+                                            onClick={() => handleView(product)}
+                                            className="opacity-90 hover:opacity-100 transition-opacity bg-primary/10 text-primary hover:bg-primary hover:text-white"
+                                        >
+                                            <Eye className="w-4 h-4 mr-2" /> View Details
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                            {paginatedProducts.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="h-24 text-center">
+                                        <div className="flex flex-col items-center justify-center text-muted-foreground">
+                                            <Filter className="h-8 w-8 mb-2 opacity-20" />
+                                            <p>No products matching your search.</p>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+
+                {/* Pagination Footer */}
+                <div className="flex items-center justify-between px-4 py-4 border-t bg-muted/10">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span>Show:</span>
+                        <select
+                            className="h-8 w-16 rounded-md border border-input bg-background px-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            value={itemsPerPage}
+                            onChange={(e) => setItemsPerPage(Number(e.target.value))}
                         >
-                            <ChevronLeft className="h-4 w-4" />
-                            Previous
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                        >
-                            Next
-                            <ChevronRight className="h-4 w-4" />
-                        </Button>
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                        </select>
+                        <span>per page</span>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                        <div className="text-sm text-muted-foreground hidden sm:block mr-2">
+                            Page {currentPage} of {totalPages || 1}
+                        </div>
+                        <div className="flex items-center space-x-1">
+                            <Button
+                                variant="outline"
+                                className="h-8 w-8 p-0 lg:flex"
+                                onClick={() => setCurrentPage(1)}
+                                disabled={currentPage === 1}
+                            >
+                                <span className="sr-only">Go to first page</span>
+                                <ChevronsLeft className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="h-8 w-8 p-0"
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                            >
+                                <span className="sr-only">Go to previous page</span>
+                                <ChevronLeft className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="h-8 w-8 p-0"
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                            >
+                                <span className="sr-only">Go to next page</span>
+                                <ChevronRight className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="h-8 w-8 p-0 lg:flex"
+                                onClick={() => setCurrentPage(totalPages)}
+                                disabled={currentPage === totalPages}
+                            >
+                                <span className="sr-only">Go to last page</span>
+                                <ChevronsRight className="h-4 w-4" />
+                            </Button>
+                        </div>
                     </div>
                 </div>
-            )}
+            </Card>
 
-            {/* Enhanced View Details Modal */}
+            {/* Enhanced View Details Modal (Max Width 7XL with 600px Height) */}
             <Dialog open={isInternalOpen} onOpenChange={setIsInternalOpen}>
                 <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] overflow-y-auto p-4 sm:p-6">
                     <DialogHeader>
