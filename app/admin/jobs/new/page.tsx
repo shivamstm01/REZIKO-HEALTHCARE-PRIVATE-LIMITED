@@ -26,6 +26,10 @@ export default function NewJobPage() {
                     </div>
                 </div>
                 <div className="space-y-2">
+                    <Label htmlFor="experience">Required Experience</Label>
+                    <Input id="experience" name="experience" placeholder="e.g. 2-5 years" required />
+                </div>
+                <div className="space-y-2">
                     <Label htmlFor="description">Description</Label>
                     <Textarea id="description" name="description" required />
                 </div>

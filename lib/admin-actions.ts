@@ -93,12 +93,14 @@ export async function createJob(formData: FormData) {
     const title = formData.get("title") as string;
     const location = formData.get("location") as string;
     const type = formData.get("type") as string;
+    const experience = formData.get("experience") as string;
     const description = formData.get("description") as string;
 
     await addDoc(collection(db, "jobs"), {
         title,
         location,
         type,
+        experience, // Added experience
         description,
         createdAt: new Date().toISOString()
     });

@@ -43,8 +43,8 @@ export default async function JobApplyPage({ params }: { params: Promise<{ jobId
 
                 <div className="space-y-2">
                     <Label htmlFor="resume">Resume (PDF)</Label>
-                    <Input id="resume" name="resume" type="file" disabled className="cursor-not-allowed opacity-50" />
-                    <p className="text-xs text-muted-foreground">Resume upload is currently disabled. Submitting will use a placeholder.</p>
+                    <Input id="resume" name="resume" type="file" accept="application/pdf" required />
+                    <p className="text-xs text-muted-foreground">Upload your resume in PDF format (Max 800KB).</p>
                 </div>
 
                 <div className="flex gap-4">

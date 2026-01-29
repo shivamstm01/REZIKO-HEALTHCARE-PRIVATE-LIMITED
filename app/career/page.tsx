@@ -1,8 +1,6 @@
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { JobsList } from "./jobs-list";
 
 export default async function CareerPage() {
     let jobs: any[] = [];
@@ -24,33 +22,7 @@ export default async function CareerPage() {
                 </p>
             </div>
 
-            <div className="grid gap-6">
-                {jobs.map((job: any) => (
-                    <Card key={job.id}>
-                        <CardHeader>
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <CardTitle>{job.title}</CardTitle>
-                                    <CardDescription>{job.location} • {job.type}</CardDescription>
-                                </div>
-                                <Button asChild>
-                                    <Link href={`/career/apply/${job.id}`}>Apply Now</Link>
-                                </Button>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-gray-600 dark:text-gray-300">
-                                {job.description}
-                            </p>
-                        </CardContent>
-                    </Card>
-                ))}
-                {jobs.length === 0 && (
-                    <div className="text-center py-12 border rounded-lg bg-muted/10">
-                        <p className="text-muted-foreground">No current openings. Please check back later.</p>
-                    </div>
-                )}
-            </div>
+            <JobsList jobs={jobs} />
         </div>
     );
 }
