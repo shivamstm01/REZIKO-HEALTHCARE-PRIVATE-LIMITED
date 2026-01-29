@@ -215,9 +215,9 @@ export function ProductsTable({ products }: ProductsTableProps) {
                 </div>
             </Card>
 
-            {/* Enhanced View Details Modal (Max Width 7XL with 600px Height) */}
+            {/* Enhanced View Details Modal (Max Width Full with 600px Height) */}
             <Dialog open={isInternalOpen} onOpenChange={setIsInternalOpen}>
-                <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] overflow-y-auto p-4 sm:p-6">
+                <DialogContent className="max-w-[98vw] w-[98vw] sm:max-w-[98vw] max-h-[95vh] overflow-y-auto p-4 sm:p-6">
                     <DialogHeader>
                         <DialogTitle className="text-2xl sm:text-3xl font-bold">{selectedProduct?.name}</DialogTitle>
                         <DialogDescription className="text-lg">{selectedProduct?.type}</DialogDescription>
