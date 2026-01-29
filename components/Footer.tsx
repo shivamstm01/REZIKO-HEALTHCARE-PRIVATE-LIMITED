@@ -4,10 +4,13 @@ export function Footer() {
     return (
         <footer className="border-t bg-muted/40">
             <div className="container py-8 md:py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div className="space-y-3">
-                        <h3 className="text-lg font-semibold text-primary">Reziko Healthcare</h3>
-                        <p className="text-sm text-muted-foreground">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
+                    <div className="space-y-3 md:flex md:flex-col md:items-start items-center">
+                        {/* Logo Section */}
+                        <div className="flex justify-center md:justify-start w-full">
+                            <h3 className="text-lg font-semibold text-primary">Reziko Healthcare</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground mx-auto md:mx-0">
                             Providing premium healthcare solutions for a better tomorrow.
                         </p>
                     </div>

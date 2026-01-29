@@ -11,13 +11,13 @@ export function ModeToggle() {
 
     return (
         <div className="flex gap-2">
-            <Button variant="ghost" size="icon" onClick={() => setTheme("light")} className="dark:hidden">
-                <Sun className="h-[1.2rem] w-[1.2rem]" />
-                <span className="sr-only">Light Mode</span>
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => setTheme("dark")} className="hidden dark:flex">
+            <Button variant="ghost" size="icon" onClick={() => setTheme("dark")} className="dark:hidden">
                 <Moon className="h-[1.2rem] w-[1.2rem]" />
-                <span className="sr-only">Dark Mode</span>
+                <span className="sr-only">Switch to Dark Mode</span>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => setTheme("light")} className="hidden dark:flex">
+                <Sun className="h-[1.2rem] w-[1.2rem]" />
+                <span className="sr-only">Switch to Light Mode</span>
             </Button>
         </div>
     )
