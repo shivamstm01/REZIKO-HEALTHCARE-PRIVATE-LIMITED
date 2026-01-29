@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -5,6 +8,9 @@ import { Menu } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 
 export function Header() {
+    const pathname = usePathname();
+    const isLoginPage = pathname === "/login";
+
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center justify-between">
@@ -34,11 +40,13 @@ export function Header() {
                 <div className="flex items-center gap-2">
                     <ModeToggle />
 
-                    <div className="hidden md:block">
-                        <Button variant="outline" asChild>
-                            <Link href="/login">Admin Login</Link>
-                        </Button>
-                    </div>
+                    {!isLoginPage && (
+                        <div className="hidden md:block">
+                            <Button variant="outline" asChild>
+                                <Link href="/login">Admin Login</Link>
+                            </Button>
+                        </div>
+                    )}
 
                     {/* Mobile Navigation */}
                     <Sheet>
@@ -66,11 +74,13 @@ export function Header() {
                                 <Link href="/contact" className="text-lg font-medium hover:underline">
                                     Contact
                                 </Link>
-                                <div className="mt-4">
-                                    <Button className="w-full" asChild>
-                                        <Link href="/login">Admin Login</Link>
-                                    </Button>
-                                </div>
+                                {!isLoginPage && (
+                                    <div className="mt-4">
+                                        <Button className="w-full" asChild>
+                                            <Link href="/login">Admin Login</Link>
+                                        </Button>
+                                    </div>
+                                )}
                             </nav>
                         </SheetContent>
                     </Sheet>
